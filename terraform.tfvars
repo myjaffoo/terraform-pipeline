@@ -1,2 +1,2 @@
-bucket_name = ["myj-test-bucket1", "myjaffoo-test-bucket2"]
+bucket_name = ["myj-test-bucket1"]
 account = "483717007211"
