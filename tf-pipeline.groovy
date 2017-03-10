@@ -40,10 +40,12 @@ node {
             currentBuild.result = 'SUCCESS'
         }
         if (planExitCode == "1") {
+            slackSend channel: '#ci', color: 'danger', message: "Plan Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}"
             currentBuild.result = 'FAILURE'
         }
         if (planExitCode == "2") {
             stash name: "plan", includes: "plan.out"
+            slackSend channel: '#ci', color: 'good', message: "Plan Awaiting Approval: ${env.JOB_NAME} - ${env.BUILD_NUMBER}"
             try {
                 input message: 'Apply Plan?', ok: 'Apply'
                 apply = true
