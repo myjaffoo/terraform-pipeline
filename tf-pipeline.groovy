@@ -13,7 +13,7 @@ node {
 
     stage name: 'Checkout'
         echo "############# Checkout: Checking terraform files from source repository #############"
-        git url: 'https://github.com/yas360/terraform-iam-policy.git'
+        git url: 'https://github.com/yas360/terraform-pipeline.git'
         def tfHome = tool name: 'terraform', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
         env.PATH = "${tfHome}:${env.PATH}"
         sh 'terraform --version'
