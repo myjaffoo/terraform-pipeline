@@ -32,7 +32,7 @@ node {
 
     stage name: 'Plan'
         echo "############# Plan: Creating terraform execution plan #############"
-        sh 'set +e; cd \$WORKSPACE/iam/; terraform plan -out=plan.out -detailed-exitcode; echo \$? > tf-plan-status'
+        sh 'set +e; cd \$WORKSPACE/iam/; terraform plan -out=\$BUILD_NUMBER-plan.out -detailed-exitcode; echo \$? > tf-plan-status'
         def planExitCode = readFile('iam/tf-plan-status').trim()
         echo "Terraform Plan Exit Code: ${planExitCode}"
         def apply = false
@@ -44,7 +44,7 @@ node {
             currentBuild.result = 'FAILURE'
         }
         if (planExitCode == "2") {
-            stash name: "plan", includes: "iam/plan.out"
+            stash name: "plan", includes: "iam/${env.BUILD_NUMBER}-plan.out"
             slackSend channel: '#ci', color: 'good', message: "Plan Awaiting Approval: ${env.JOB_NAME} - ${env.BUILD_NUMBER}"
             try {
                 input message: 'Apply Plan?', ok: 'Apply'
@@ -62,7 +62,7 @@ node {
             if (fileExists("\$WORKSPACE/iam/status.apply")) {
                 sh 'rm \$WORKSPACE/iam/status.apply'
             }
-            sh 'set +e; cd \$WORKSPACE/iam/; terraform apply plan.out; echo \$? > status.apply'
+            sh 'set +e; cd \$WORKSPACE/iam/; terraform apply \$BUILD_NUMBER-plan.out; echo \$? > status.apply'
             def applyExitCode = readFile('iam/status.apply').trim()
             if (applyExitCode == "0") {
                 echo "Successfully applied changes"
