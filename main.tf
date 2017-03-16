@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "tf-state-bucket-myj"
+    key = "iam-policy/terraform.tfstate"
+    region = "eu-west-1"
+  }
+}
+
 data "aws_iam_policy_document" "tf_policy_document" {
   statement {
     actions = [
